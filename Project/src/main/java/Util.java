@@ -33,8 +33,6 @@ public class Util {
     }
     /**
      * 获得文件的分析域
-     * @param dirPath 文件夹名称
-     * @return 分析域
      */
     private static AnalysisScope getScope(String... dirPath) throws IOException, InvalidClassFileException {
         // 将分析域存到文件中
@@ -42,7 +40,7 @@ public class Util {
         AnalysisScope scope = AnalysisScopeReader.readJavaScope(
                 "scope.txt", /*Path to scope file*/
                 exFile, /*Path to exclusion file*/
-                AutoTesting.class.getClassLoader()
+                mainTest.class.getClassLoader()
         );
         for(String s:dirPath){
             // 把文件夹下的.class文件加入
@@ -60,22 +58,18 @@ public class Util {
 
     /**
      * 获得图
-     * @param dirPath 文件夹名
-     * @return 图
      */
     static CHACallGraph getGraph(String... dirPath) throws CancelException, IOException, InvalidClassFileException, ClassHierarchyException {
         AnalysisScope scope = getScope(dirPath);
         ClassHierarchy cha = ClassHierarchyFactory.makeWithRoot(scope);
         Iterable<Entrypoint> eps = new AllApplicationEntrypoints(scope, cha);
-        CHACallGraph cg = new CHACallGraph(cha);
-        cg.init(eps);
-        return cg;
+        CHACallGraph chacg = new CHACallGraph(cha);
+        chacg.init(eps);
+        return chacg;
     }
 
     /**
      * 获得文件里每一行组成的Set
-     * @param filePath 文件路径
-     * @return 文件里每一行组成的集合
      */
     public static Set<String> getFileSet(String filePath) throws IOException {
         Set<String> res = new HashSet<String>();
@@ -99,9 +93,6 @@ public class Util {
 
     /**
      * 排除不合法的字符
-     * @param method
-     * @param invalidStr
-     * @return 方法是否合法
      */
     public static Boolean isMethodValid(ShrikeBTMethod method,String... invalidStr){
         boolean containFlag = true;

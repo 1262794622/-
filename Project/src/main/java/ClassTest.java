@@ -14,28 +14,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ClassTesting {
-    /**
-     * 获得方法级 受影响的测试用例
-     * @param projectTarget
-     * @param changeInfoPath
-     * @return 受影响的测试用例
-     */
+public class ClassTest {
+
     public static Set<String> getClassResult(String projectTarget, String changeInfoPath) throws CancelException, ClassHierarchyException, InvalidClassFileException, IOException {
 
-        String testDirPath = projectTarget + "\\test-classes\\net\\mooctest"; // 测试文件夹
-        // 存储发生变化的内部类
-        Set<String> changeClass = new HashSet<String>();
-        // 存储相关的test方法（方法级）
+        String testDirPath = projectTarget + "\\test-classes\\net\\mooctest";//获得测试方法路径
+        Set<String> changedClass = new HashSet<String>();
         Set<String> resClass = new HashSet<String>();
-        // 读取change_info.txt
         FileReader changeInfoFile = new FileReader(changeInfoPath);
-        BufferedReader bf = new BufferedReader(changeInfoFile);
+        BufferedReader buffer = new BufferedReader(changeInfoFile);
         String line = null;
-        while ((line = bf.readLine()) != null) {
-            changeClass.add(line.split(" ")[0].trim());
+        while ((line = buffer.readLine()) != null) {
+            changedClass.add(line.split(" ")[0].trim());
         }
-        // 求出受到影响的test方法
         CHACallGraph cg = Util.getGraph(testDirPath);
         for(CGNode node: cg) {
             if(node.getMethod() instanceof ShrikeBTMethod) {
@@ -43,7 +34,7 @@ public class ClassTesting {
                 if(!Util.isMethodValid(method,".<init>()V"))continue;// 去掉init的情况
                 for(CallSiteReference c: method.getCallSites()){
                     String className = c.getDeclaredTarget().getDeclaringClass().getName().toString();
-                    if(changeClass.contains(className)) {
+                    if(changedClass.contains(className)) {
                         resClass.add(Util.getMethodFallName(method));
                         break;
                     }
@@ -53,15 +44,10 @@ public class ClassTesting {
         return resClass;
     }
 
-    /**
-     * 获得类级别的 dot文件中hashMap
-     * @param projectTarget
-     * @param changeInfoPath
-     * @return
-     */
+
     public static Map<String,Set<String>> getClassMap(String projectTarget, String changeInfoPath) throws CancelException, ClassHierarchyException, InvalidClassFileException, IOException {
-        String srcDirPath = projectTarget + "\\classes\\net\\mooctest"; // 代码文件夹
-        String testDirPath = projectTarget + "\\test-classes\\net\\mooctest"; // 测试文件文件夹
+        String srcDirPath = projectTarget + "\\classes\\net\\mooctest";
+        String testDirPath = projectTarget + "\\test-classes\\net\\mooctest";
         // 类级映射关系
         Map<String,Set<String>> classMap = new HashMap<String, Set<String>>();
 

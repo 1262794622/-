@@ -12,8 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class MethodTesting {
-    // 存储发生变化的方法
+public class MethodTest {
     private static Set<String> changeMethods = new HashSet<String>();
     // 方法级 map
     private static Map<String, Set<String>> methodMap = new HashMap<String, Set<String>>();
@@ -30,18 +29,11 @@ public class MethodTesting {
             dfs(s);
         }
     }
-
-    /**
-     * 获得方法级 受影响的测试用例
-     * @param projectTarget
-     * @param changeInfoPath
-     * @return 受影响的测试用例
-     */
     public static Set<String> getMethodResult(String projectTarget, String changeInfoPath) throws CancelException, ClassHierarchyException, InvalidClassFileException, IOException {
         changeMethods.clear();
         methodMap.clear();
-        String srcDirPath = projectTarget + "\\classes\\net\\mooctest"; // 代码文件夹
-        String testDirPath = projectTarget + "\\test-classes\\net\\mooctest"; // 测试文件夹
+        String srcDirPath = projectTarget + "\\classes\\net\\mooctest";
+        String testDirPath = projectTarget + "\\test-classes\\net\\mooctest";
         // 存储相关的test方法（方法级）
         Set<String> resMethods = new HashSet<String>();
         // 获得方法的文件分析域
@@ -90,15 +82,10 @@ public class MethodTesting {
 
 
 
-    /**
-     * 获得类级别的 dot文件中hashMap
-     * @param projectTarget
-     * @param changeInfoPath
-     * @return
-     */
+
     public static Map<String,Set<String>> getMethodMap(String projectTarget, String changeInfoPath) throws CancelException, ClassHierarchyException, InvalidClassFileException, IOException {
-        String srcDirPath = projectTarget + "\\classes\\net\\mooctest"; // 代码文件夹
-        String testDirPath = projectTarget + "\\test-classes\\net\\mooctest"; // 测试文件文件夹
+        String srcDirPath = projectTarget + "\\classes\\net\\mooctest";
+        String testDirPath = projectTarget + "\\test-classes\\net\\mooctest";
         // 类级映射关系
         Map<String,Set<String>> dotMethodMap = new HashMap<String, Set<String>>();
 
